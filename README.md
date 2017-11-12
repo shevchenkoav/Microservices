@@ -10,3 +10,7 @@ docker-machine create --driver google \
 
 # Open port in GCE FW :9292
 gcloud compute firewall-rules create reddit-app --allow tcp:9292 --priority=65534 --target-tags=docker-machine --description="Allow TCP connections" --direction=INGRESS
+
+#push image
+docker tag reddit:latest shevchenkoav/express42-reddit:1.0
+docker push shevchenkoav/express42-reddit
