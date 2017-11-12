@@ -17,3 +17,7 @@ docker push shevchenkoav/express42-reddit
 
 # Delete instance
 gcloud compute instances delete docker-host --zone=europe-west1-b
+
+# Delete dangling images
+docker system prune
+docker rmi $(docker images -f "dangling=true" -q)
