@@ -13,6 +13,7 @@ gcloud compute firewall-rules create reddit-app --allow tcp:9292 --priority=6553
 
 # Push image to hub.docker.com
 docker tag reddit:latest shevchenkoav/express42-reddit:1.0
+
 docker push shevchenkoav/express42-reddit
 
 # Delete instance
