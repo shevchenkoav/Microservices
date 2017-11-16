@@ -41,7 +41,7 @@ docker run -d --network=reddit \
 -p 9292:9292 shevchenkoav/ui:1.0
 
 ### Create bridge-network with alt.aliases and new env for each containers.
-
+```bash
 docker run -d --network=reddit \
 --network-alias=post_db --network-alias=comment_db \
 -e POST_SERVICE_HOST='post_reddit' \
@@ -69,8 +69,11 @@ docker run -d --network=reddit \
 -e COMMENT_SERVICE_HOST='comment_reddit' \
 -e COMMENT_DATABASE_HOST='comment_db' \
 shevchenkoav/ui:1.0
+```
 
 - Open url and test app.
+
+
 
 ### stop containers
 
