@@ -38,6 +38,8 @@ docker build -t shevchenkoav/ui:1.0 ./ui
 ```bash
 docker build -t shevchenkoav/ui:2.0 -f ./ui/Dockerfile_2.0 ./ui/
 docker build -t shevchenkoav/ui:3.0 -f ./ui/Dockerfile_3.0 ./ui/
+### without upgrade&&update
+docker build -t shevchenkoav/ui:4.0 -f ./ui/Dockerfile_4.0 ./ui/
 ```
 
 ### Create bridge-network with aliases
