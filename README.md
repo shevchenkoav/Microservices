@@ -13,7 +13,7 @@ docker build -t shevchenkoav/comment:1.0 ./comment
 docker build -t shevchenkoav/ui:1.0 ./ui
 ```
 
-- or change image version for new version Dockerfile
+- or change image ui version for new version Dockerfile
 
 ```bash
 docker build -t shevchenkoav/ui:2.0 -f ./ui/Dockerfile_2.0 ./ui/
