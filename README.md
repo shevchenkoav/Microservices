@@ -14,8 +14,9 @@ Cервис отвечающий за написание комментари�
 
 ## DB
 
- MongoDB
+ - MongoDB
 
+```bash
 docker pull mongo:latest
 
 docker build -t shevchenkoav/post:1.0 ./post-py
@@ -23,8 +24,10 @@ docker build -t shevchenkoav/post:1.0 ./post-py
 docker build -t shevchenkoav/comment:1.0 ./comment
 
 docker build -t shevchenkoav/ui:1.0 ./ui
+```
 
 - or change image version for new version Dockerfile
+
 ```bash
 docker build -t shevchenkoav/ui:2.0 -f ./ui/Dockerfile_2.0 ./ui/
 docker build -t shevchenkoav/ui:3.0 -f ./ui/Dockerfile_3.0 ./ui/
@@ -32,6 +35,7 @@ docker build -t shevchenkoav/ui:3.0 -f ./ui/Dockerfile_3.0 ./ui/
 
 ### Create bridge-network with aliases
 
+```bash
 docker network create reddit
 
 docker run -d --network=reddit -v reddit_db:/data/db \
@@ -45,8 +49,10 @@ docker run -d --network=reddit \
 
 docker run -d --network=reddit \
 -p 9292:9292 shevchenkoav/ui:3.0
+```
 
 ### Create bridge-network with alt.aliases and new env for each containers.
+
 ```bash
 docker run -d --network=reddit -v reddit_db:/data/db \
 --network-alias=post_db --network-alias=comment_db \
@@ -83,7 +89,3 @@ shevchenkoav/ui:1.0
 ```bash
 docker kill $(docker ps -q)
 ```
-
-### stop containers
-
-docker kill $(docker ps -q)
