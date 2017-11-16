@@ -26,10 +26,10 @@ docker tag reddit:latest shevchenkoav/otus-reddit:1.0
 
 docker push shevchenkoav/otus-reddit:1.0
 
-# Delete instance
-gcloud compute instances delete docker-host --zone=europe-west1-b
-
 # Delete dangling images
 docker system prune
 
 docker rmi $(docker images -f "dangling=true" -q)
+
+# Delete instance
+gcloud compute instances delete docker-host --zone=europe-west1-b
