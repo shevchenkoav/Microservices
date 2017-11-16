@@ -1,20 +1,7 @@
 # Microservices
-
-## post-py
-
 Сервис отвещающий за написание постов
-
-## comment
-
 Cервис отвечающий за написание комментариев
-
-## ui
-
 Веб-интерфейс для других сервисов
-
-## DB
-
- - MongoDB
 
 ```bash
 docker pull mongo:latest
