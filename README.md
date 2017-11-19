@@ -94,7 +94,9 @@ shevchenkoav/ui:1.0
 ```
 
 - Open url and test app.
-- Stop running containers
+
+
+### Stop running containers
 
 ```bash
 docker kill $(docker ps -q)
@@ -111,7 +113,7 @@ docker push shevchenkoav/otus-reddit:1.0
 ```bash
 docker system prune
 ```
-- or 
+- or
 ```bash
 docker rmi $(docker images -f "dangling=true" -q)
 ```
