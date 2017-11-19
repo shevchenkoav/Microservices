@@ -3,7 +3,7 @@
 - Cервис отвечающий за написание комментариев
 - Веб-интерфейс для других сервисов
 
-# Docker machine (GCE)
+# Docker machine (GCE) create
 ```bash
 docker-machine create --driver google \
 --google-project docker-185820 \
@@ -11,6 +11,7 @@ docker-machine create --driver google \
 --google-machine-type g1-small \
 --google-machine-image $(gcloud compute images list --filter ubuntu-1604-lts --uri) docker-host
 ```
+
 ```bash
 eval $(docker-machine env docker-host)
 docker-machine env docker-host
@@ -113,7 +114,7 @@ docker system prune
 ```bash
 docker rmi $(docker images -f "dangling=true" -q)
 ```
-# Delete instance
+# Delete instance (GCE)
 ```bash
-gcloud compute instances delete docker-host --zone=europe-west1-b
+docker-machine rm docker-host
 ```
