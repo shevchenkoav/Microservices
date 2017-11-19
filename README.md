@@ -95,21 +95,20 @@ shevchenkoav/ui:1.0
 
 - Open url and test app.
 
-
-### Stop running containers
+## Stop & delete running containers/instances
 
 ```bash
 docker kill $(docker ps -q)
 ```
 
-# Push image to hub.docker.com
+### Push image to hub.docker.com
 ```bash
 docker tag reddit:latest shevchenkoav/otus-reddit:1.0
 ```
 ```bash
 docker push shevchenkoav/otus-reddit:1.0
 ```
-# Delete dangling images
+### Delete dangling images
 ```bash
 docker system prune
 ```
@@ -117,7 +116,7 @@ docker system prune
 ```bash
 docker rmi $(docker images -f "dangling=true" -q)
 ```
-# Delete instance (GCE)
+### Delete instance (GCE)
 ```bash
 docker-machine rm docker-host
 ```
