@@ -111,6 +111,7 @@ docker push shevchenkoav/otus-reddit:1.0
 ```bash
 docker system prune
 ```
+- or 
 ```bash
 docker rmi $(docker images -f "dangling=true" -q)
 ```
