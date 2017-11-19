@@ -3,7 +3,7 @@
 - Cервис отвечающий за написание комментариев
 - Веб-интерфейс для других сервисов
 
-# Docker machine (GCE) create
+## Docker machine (GCE) create
 ```bash
 docker-machine create --driver google \
 --google-project docker-185820 \
@@ -17,7 +17,7 @@ eval $(docker-machine env docker-host)
 docker-machine env docker-host
 docker-machine ssh docker-host
 ```
-# Open port in GCE FW :9292
+## Open port in GCE FW :9292
 ```bash
 gcloud compute firewall-rules create reddit-app --allow tcp:9292 --priority=65534 --target-tags=docker-machine --description="Allow TCP connections" --direction=INGRESS
 ```
