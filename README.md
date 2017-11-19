@@ -61,7 +61,7 @@ docker run -d --network=reddit \
 -p 9292:9292 shevchenkoav/ui:3.0
 ```
 
-### Create bridge-network with alt.aliases and new env for each containers.
+#### Create bridge-network with alt.aliases and new env for each containers.
 
 ```bash
 docker run -d --network=reddit -v reddit_db:/data/db \
