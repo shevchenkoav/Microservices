@@ -120,3 +120,14 @@ docker rmi $(docker images -f "dangling=true" -q)
 ```bash
 docker-machine rm docker-host
 ```
+# HW 17
+
+- docker-machine create
+
+```bash
+### for example: tests, export, import, build, parsing (interface loopback)
+docker run --network none --rm -d --name net_test joffotron/docker-net-tools -c "sleep 100"
+```
+```bash
+docker run --network host --rm -d --name net_test joffotron/docker-net-tools -c "sleep 100"
+```
