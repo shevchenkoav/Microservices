@@ -124,10 +124,16 @@ docker-machine rm docker-host
 
 - docker-machine create
 
-```bash
 ### for example: tests, export, import, build, parsing (interface loopback)
+```bash
 docker run --network none --rm -d --name net_test joffotron/docker-net-tools -c "sleep 100"
 ```
+### for example: tests, export, import, build, parsing (interface loopback)
+
 ```bash
 docker run --network host --rm -d --name net_test joffotron/docker-net-tools -c "sleep 100"
+```
+
+```bash
+docker-compose -p 'compose_project_name' up -d
 ```

@@ -1,5 +1,4 @@
 version: '3.3'
-prefix: 'HW17Docker'
 services:
   mongo_db:
     image: mongo:${MONGO_VERSION}
