@@ -137,5 +137,3 @@ docker run --network host --rm -d --name net_test joffotron/docker-net-tools -c 
 ```bash
 docker-compose -p 'compose_project_name' up -d
 ```
-
-.
