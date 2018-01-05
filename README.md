@@ -137,3 +137,26 @@ docker run --network host --rm -d --name net_test joffotron/docker-net-tools -c 
 ```bash
 docker-compose -p 'compose_project_name' up -d
 ```
+
+#HW 19 GITLAB CI
+
+## Info about docker drivers (GCE)
+https://docs.docker.com/machine/drivers/
+
+## GCE machine types
+https://cloud.google.com/compute/docs/machine-types
+
+## Docker machine (GCE) create
+```bash
+docker-machine create --driver google \
+--google-project docker-185820 \
+--google-zone europe-west1-b \
+--google-machine-type n1-standard-1 \
+--google-disk-size 100 \
+--google-machine-image $(gcloud compute images list --filter ubuntu-1604-lts --uri) gitlab-ci
+```
+
+```bash
+## Config environment
+eval $(docker-machine env docker-host)
+```
