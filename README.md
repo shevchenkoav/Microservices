@@ -213,3 +213,4 @@ vm1
 ```bash
 eval $(docker-machine env vm1)
 ```
+.
