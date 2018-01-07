@@ -213,4 +213,8 @@ vm1
 ```bash
 eval $(docker-machine env vm1)
 ```
-..
+
+docker push shevchenkoav/ui
+docker push shevchenkoav/comment
+docker push shevchenkoav/post
+docker push shevchenkoav/prometheus
