@@ -17,21 +17,17 @@ services:
           - post_db
           - comment_db
   ui:
-    build:
-      context: ./ui
     image: ${USERNAME}/ui:${LATEST_VERSION}
     ports:
       - ${UI_HOST_PORT}:${UI_CONTAINER_PORT}/tcp
     networks:
       - front_net
   post:
-    build: ./post-py
     image: ${USERNAME}/post:${LATEST_VERSION}
     networks:
       - back_net
       - front_net
   comment:
-    build: ./comment
     image: ${USERNAME}/comment:${LATEST_VERSION}
     networks:
       - back_net
