@@ -3,7 +3,7 @@ services:
   prometheus:
     image: ${USER_NAME}/prometheus
     ports:
-      - '9090:9090'
+      - ${PROMETHEUS_HOST_PORT}:${PROMETHEUS_CONTAINER_PORT}/tcp
     networks:
       - back_net
       - front_net
@@ -17,18 +17,18 @@ services:
           - post_db
           - comment_db
   ui:
-    image: ${USERNAME}/ui:${LATEST_VERSION}
+    image: ${USER_NAME}/ui:${LATEST_VERSION}
     ports:
       - ${UI_HOST_PORT}:${UI_CONTAINER_PORT}/tcp
     networks:
       - front_net
   post:
-    image: ${USERNAME}/post:${LATEST_VERSION}
+    image: ${USER_NAME}/post:${LATEST_VERSION}
     networks:
       - back_net
       - front_net
   comment:
-    image: ${USERNAME}/comment:${LATEST_VERSION}
+    image: ${USER_NAME}/comment:${LATEST_VERSION}
     networks:
       - back_net
       - front_net
