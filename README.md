@@ -154,9 +154,42 @@ docker-machine create --driver google \
 --google-machine-type n1-standard-1 \
 --google-disk-size 100 \
 --google-machine-image $(gcloud compute images list --filter ubuntu-1604-lts --uri) gitlab-ci
+
+or
+
+docker-machine create --driver google \
+--google-project docker-185820 \
+--google-zone europe-west1-b \
+--google-machine-type n1-standard-1 \
+--google-disk-size 100 \
+--google-open-port 80 \
+--google-open-port 443 \
+--google-machine-image $(gcloud compute images list --filter ubuntu-1604-lts --uri) \
+gitlab-ci
 ```
 
 ```bash
 ## Config environment
-eval $(docker-machine env docker-host)
+eval $(docker-machine env gitlab-ci)
 ```
+
+docker-machine ssh gitlab-ci
+
+### Runner
+docker run -d --name gitlab-runner --restart always \
+   -v /srv/gitlab-runner/config:/etc/gitlab-runner \
+   -v /var/run/docker.sock:/var/run/docker.sock \
+   gitlab/gitlab-runner:latest
+
+### Runner is need to be registered
+docker exec -it gitlab-runner gitlab-runner register
+
+### if need to restart gitlab ci
+sudo gitlab-ctl restart
+sudo gitlab-ctl status
+sudo docker restart container_name
+
+## HW 21
+- Prometheus: запуск, конфигурация, знакомство с Web UI
+- Мониторинг состояния микросервисов
+- Сбор метрик хоста с использованием экспортера
