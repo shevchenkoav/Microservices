@@ -214,6 +214,12 @@ vm1
 eval $(docker-machine env vm1)
 ```
 
+Возможные ошибки в ходе выполнения работы:
+1. Контейнеры собраны не со всеми зависимостями (post-requirement-post_app.py-import prometheus), будут падать сразу же в exited, нужно пересобрать.
+2. CRLF -> LF
+3. в HEAD стали попадать файлы вида new file: "comment/build_info.txt\r" единственный найденный пока способ как от этого избавляться git stash, при том что файл добавлен в игнор.
+
+
 docker push shevchenkoav/ui
 docker push shevchenkoav/comment
 docker push shevchenkoav/post
