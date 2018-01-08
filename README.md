@@ -138,6 +138,89 @@ docker run --network host --rm -d --name net_test joffotron/docker-net-tools -c 
 docker-compose -p 'compose_project_name' up -d
 ```
 
+#HW 19 GITLAB CI
+
+## Info about docker drivers (GCE)
+https://docs.docker.com/machine/drivers/
+
+## GCE machine types
+https://cloud.google.com/compute/docs/machine-types
+
+## Docker machine (GCE) create
 ```bash
-test
+docker-machine create --driver google \
+--google-project docker-185820 \
+--google-zone europe-west1-b \
+--google-machine-type n1-standard-1 \
+--google-disk-size 100 \
+--google-machine-image $(gcloud compute images list --filter ubuntu-1604-lts --uri) gitlab-ci
+
+or
+
+docker-machine create --driver google \
+--google-project docker-185820 \
+--google-zone europe-west1-b \
+--google-machine-type n1-standard-1 \
+--google-disk-size 100 \
+--google-open-port 80 \
+--google-open-port 443 \
+--google-machine-image $(gcloud compute images list --filter ubuntu-1604-lts --uri) \
+gitlab-ci
 ```
+
+```bash
+## Config environment
+eval $(docker-machine env gitlab-ci)
+```
+
+docker-machine ssh gitlab-ci
+
+### Runner
+docker run -d --name gitlab-runner --restart always \
+   -v /srv/gitlab-runner/config:/etc/gitlab-runner \
+   -v /var/run/docker.sock:/var/run/docker.sock \
+   gitlab/gitlab-runner:latest
+
+### Runner is need to be registered
+docker exec -it gitlab-runner gitlab-runner register
+
+### if need to restart gitlab ci
+sudo gitlab-ctl restart
+sudo gitlab-ctl status
+sudo docker restart container_name
+
+## HW 21
+- Prometheus: запуск, конфигурация, знакомство с Web UI
+- Мониторинг состояния микросервисов
+- Сбор метрик хоста с использованием экспортера
+
+### Create fw rule for prmt & puma
+```bash
+gcloud compute firewall-rules create prometheus-default --allow tcp:9090
+gcloud compute firewall-rules create puma-default --allow tcp:9292
+```
+
+### create docker host & configure local env
+```bash
+docker-machine create --driver google \
+--google-project infra-185820 \
+--google-machine-image https://www.googleapis.com/compute/v1/projects/
+ubuntu-os-cloud/global/images/family/ubuntu-1604-lts \
+--google-machine-type n1-standard-1 \
+--google-zone europe-west1-b \
+vm1
+```
+```bash
+eval $(docker-machine env vm1)
+```
+
+Возможные ошибки в ходе выполнения работы:
+1. Контейнеры собраны не со всеми зависимостями (post-requirement-post_app.py-import prometheus), будут падать сразу же в exited, нужно пересобрать.
+2. CRLF -> LF
+3. в HEAD стали попадать файлы вида new file: "comment/build_info.txt\r" единственный найденный пока способ как от этого избавляться git stash, при том что файл добавлен в игнор.
+
+
+docker push shevchenkoav/ui
+docker push shevchenkoav/comment
+docker push shevchenkoav/post
+docker push shevchenkoav/prometheus
