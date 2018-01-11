@@ -235,6 +235,7 @@ docker push shevchenkoav/prometheus
 - Configure alerting
 
 ### Create docker host
+```bash
 docker-machine create --driver google \
 --google-project docker-185820 \
 --google-machine-image https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts \
@@ -245,10 +246,14 @@ docker-machine create --driver google \
 --google-open-port 8080/tcp \
 --google-open-port 9090/tcp \
 --google-open-port 9292/tcp \
+--google-open-port 9093/tcp \
 vm1
+```
 
 ### Configure local environment
-- eval $(docker-machine env vm1)
+```Bash
+eval $(docker-machine env vm1)
+```
 
 ## cAdvisor
 
@@ -375,3 +380,9 @@ alerting:
 
 #### rebuild Dockerfile
 docker build -t $USER_NAME/prometheus .
+
+## Push images
+docker push $USER_NAME/ui
+docker push $USER_NAME/comment
+docker push $USER_NAME/post
+docker push $USER_NAME/prometheus
