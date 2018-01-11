@@ -7,6 +7,38 @@ services:
     networks:
       - back_net
       - front_net
+  alertmanager:
+    image: ${USER_NAME}/alertmanager
+    command:
+      - '-config.file=/etc/alertmanager/config.yml'
+    ports:
+      - ${ALERT_HOST_PORT}:${ALERT_CONTAINER_PORT}/tcp
+    networks:
+      - back_net
+      - front_net
+  cadvisor:
+    image: google/cadvisor:latest
+    volumes:
+      - '/:/rootfs:ro'
+      - '/var/run:/var/run:rw'
+      - '/sys:/sys:ro'
+      - '/var/lib/docker/:/var/lib/docker:ro'
+    ports:
+      - ${CADVISOR_HOST_PORT}:${CADVISOR_CONTAINER_PORT}/tcp
+    networks:
+      - back_net
+      - front_net
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=secret
+    depends_on:
+      - prometheus
+    ports:
+      - ${GRAFANA_HOST_PORT}:${GRAFANA_CONTAINER_PORT}/tcp
   node-exporter:
     image: prom/node-exporter:v0.15.0
     user: root
@@ -49,6 +81,7 @@ services:
 
 volumes:
   post_db:
+  grafana_data:
 
 networks:
   back_net:
