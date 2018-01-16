@@ -203,7 +203,7 @@ gcloud compute firewall-rules create puma-default --allow tcp:9292
 ### create docker host & configure local env
 ```bash
 docker-machine create --driver google \
---google-project infra-185820 \
+--google-project docker-185820 \
 --google-machine-image https://www.googleapis.com/compute/v1/projects/
 ubuntu-os-cloud/global/images/family/ubuntu-1604-lts \
 --google-machine-type n1-standard-1 \
@@ -219,8 +219,170 @@ eval $(docker-machine env vm1)
 2. CRLF -> LF
 3. в HEAD стали попадать файлы вида new file: "comment/build_info.txt\r" единственный найденный пока способ как от этого избавляться git stash, при том что файл добавлен в игнор.
 
+docker-compose logs --follow
 
 docker push shevchenkoav/ui
 docker push shevchenkoav/comment
 docker push shevchenkoav/post
 docker push shevchenkoav/prometheus
+
+
+# HW23 Мониторинг приложения и инфраструктуры (app&infra monitoring)
+
+- Docker containers monitoring
+- Visualise metrics
+- Collecting application metrics and business metrics
+- Configure alerting
+
+### Create docker host
+```bash
+docker-machine create --driver google \
+--google-project docker-185820 \
+--google-machine-image https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts \
+--google-machine-type n1-standard-1 \
+--google-zone europe-west1-b \
+--google-open-port 80/tcp \
+--google-open-port 3000/tcp \
+--google-open-port 8080/tcp \
+--google-open-port 9090/tcp \
+--google-open-port 9292/tcp \
+--google-open-port 9093/tcp \
+vm1
+```
+
+### Configure local environment
+```Bash
+eval $(docker-machine env vm1)
+```
+
+## cAdvisor
+
+- add new service in yml file
+
+```bash
+cadvisor:
+  image: google/cadvisor:latest
+  volumes:
+    - '/:/rootfs:ro'
+    - '/var/run:/var/run:rw'
+    - '/sys:/sys:ro'
+    - '/var/lib/docker/:/var/lib/docker:ro'
+  ports:
+    - ${CADVISOR_HOST_PORT}:${CADVISOR_CONTAINER_PORT}/tcp
+  networks:
+    - back_net
+    - front_net
+```
+- update prometheus yml file
+
+```bash
+- job_name: 'cadvisor'
+  static_configs:
+      - targets:
+        - 'cadvisor:8080'
+```
+
+```bash
+Login Dockerhub
+export USER_NAME=
+docker build -t $USER_NAME/prometheus .
+ ```
+
+## Grafana
+add new service in yml file
+
+```Bash
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=secret
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+  volumes:
+    grafana_data:
+```
+
+docker-compose up -d grafana
+
+## add info about post service in prometheus yml
+```Bash
+  - job_name: 'post'
+    static_configs:
+      - targets:
+        - 'post:5000'
+```
+
+### App metrics
+#### add dashboard (ui requests, http request with error status code, http response time)
+
+### Business_Logic_Monitoring
+#### add post_count & comment_count graphics
+
+## Add alertmanager for prometheus
+#### Add Dockerfile for alertmanager & config.yml
+```Bash
+FROM prom/alertmanager
+ADD config.yml /etc/alertmanager/
+```
+
+#### config.yml (create incoming webhook 'https://devops-team-otus.slack.com/apps/A0F7XDUAZ-incoming-webhooks?page=1')
+```Bash
+global:
+  slack_api_url: 'https://hooks.slack.com/services/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'
+
+route:
+  receiver: 'slack-notifications'
+
+receivers:
+- name: 'slack-notifications'
+  slack_configs:
+  - channel: '#artem-starostenko'
+```
+
+### build image
+docker build -t $USER_NAME/alertmanager .
+
+add alert.rules to /Prometheus
+```Bash
+# Alert for any instance that is unreachable for >5 minutes.
+ALERT InstanceDown
+  IF up == 0
+  FOR 1m
+  ANNOTATIONS {
+    summary = "Instance {{ $labels.instance }} down",
+    description = "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute.",
+  }
+```
+
+#### add rule to Dockerfile Prometheus
+```bash
+FROM prom/prometheus
+ADD prometheus.yml /etc/prometheus/
+ADD alert.rules    /etc/prometheus/
+```
+
+#### update Prometheus config
+```Bash
+rule_files:
+  - "alert.rules"
+alerting:
+  alertmanagers:
+  - scheme: http
+    static_configs:
+    - targets:
+      - "alertmanager:9093"
+```
+
+#### rebuild Dockerfile
+docker build -t $USER_NAME/prometheus .
+
+## Push images
+docker push $USER_NAME/ui
+docker push $USER_NAME/comment
+docker push $USER_NAME/post
+docker push $USER_NAME/prometheus
