@@ -388,4 +388,44 @@ docker push $USER_NAME/post
 docker push $USER_NAME/prometheus
 docker push $USER_NAME/alertmanager
 
-# Logging
+---------------
+# Logging. HW 25.
+
+## Create docker host & config local environment
+
+### create host
+docker-machine create --driver google \
+--google-project docker-185820 \
+--google-machine-image https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts \
+--google-machine-type n1-standard-1 \
+--google-zone europe-west1-b \
+--google-open-port 5601/tcp \
+--google-open-port 9292/tcp \
+--google-open-port 9411/tcp \
+logging
+
+### Configure local environment
+eval $(docker-machine env logging)
+
+### pulling images
+docker pull $USER_NAME/ui
+docker pull $USER_NAME/comment
+docker pull $USER_NAME/post
+docker pull $USER_NAME/prometheus
+docker pull $USER_NAME/alertmanager
+
+docker-compose up -d
+
+выполните команду для просмотра логов post сервиса:
+docker-compose logs -f post
+
+ports:
+    - "5000:5000"
+  logging:
+    driver: "fluentd"
+    options:
+      fluentd-address: localhost:24224
+      tag: service.post
+
+### validate docker-compose.yml
+docker-compose -f docker-compose.yml config
