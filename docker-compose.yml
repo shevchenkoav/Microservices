@@ -13,6 +13,9 @@ services:
       - '-config.file=/etc/alertmanager/config.yml'
     ports:
       - ${ALERT_HOST_PORT}:${ALERT_CONTAINER_PORT}/tcp
+    networks:
+      - back_net
+      - front_net
   cadvisor:
     image: google/cadvisor:latest
     volumes:

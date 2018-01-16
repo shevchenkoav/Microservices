@@ -416,9 +416,10 @@ docker pull $USER_NAME/alertmanager
 
 docker-compose up -d
 
-выполните команду для просмотра логов post сервиса:
+Выполняем команду для просмотра логов post сервиса:
 docker-compose logs -f post
 
+```bash
 ports:
     - "5000:5000"
   logging:
@@ -426,6 +427,7 @@ ports:
     options:
       fluentd-address: localhost:24224
       tag: service.post
+```
 
 ### validate docker-compose.yml
 docker-compose -f docker-compose.yml config
