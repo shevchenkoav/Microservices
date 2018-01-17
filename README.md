@@ -422,11 +422,11 @@ docker-compose logs -f post
 ```bash
 ports:
     - "5000:5000"
-  logging:
-    driver: "fluentd"
-    options:
-      fluentd-address: localhost:24224
-      tag: service.post
+logging:
+  driver: "fluentd"
+  options:
+    fluentd-address: localhost:24224
+    tag: service.post
 ```
 
 ### validate docker-compose.yml
