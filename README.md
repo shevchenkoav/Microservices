@@ -407,20 +407,11 @@ logging
 ### Configure local environment
 eval $(docker-machine env logging)
 
-### pulling images
-docker pull $USER_NAME/ui
-docker pull $USER_NAME/comment
-docker pull $USER_NAME/post (docker pull $USER_NAME/post:2.0 (for python2.7))
-docker pull $USER_NAME/prometheus
-docker pull $USER_NAME/alertmanager
-
-### if need python 2.7
-docker build -t shevchenkoav/post:2_0 -f ./post-py/Dockerfile_2_0 ./post-py/
-
-docker-compose up -d
-
-Выполняем команду для просмотра логов post сервиса:
-docker-compose logs -f post
+### make docker-compose-logging.yml
+### create fluentd service ./fluentd
+### make fluentd congif file
+### add inforward & copy plagins
+### add to post service logging driver to docker-compose.yml
 
 ```bash
 ports:
@@ -431,6 +422,37 @@ logging:
     fluentd-address: localhost:24224
     tag: service.post
 ```
+
+```Bash
+docker build -t $USER_NAME/fluentd .
+docker build -t shevchenkoav/post:2_0 -f ./post-py/Dockerfile_2_0 ./post-py/
+```
+
+```Bash
+docker-compose -f docker-compose-logging.yml up -d
+docker-compose down
+docker-compose up -d
+```
+
+### pulling images
+docker pull $USER_NAME/ui
+docker pull $USER_NAME/comment
+docker pull $USER_NAME/post:2_0 (for python2.7)
+docker pull $USER_NAME/prometheus
+docker pull $USER_NAME/alertmanager
+docker pull $USER_NAME/fluentd
+
+docker pull $USER_NAME/post
+
+### if need python 2.7
+docker build -t shevchenkoav/post:2_0 -f ./post-py/Dockerfile_2_0 ./post-py/
+
+docker-compose up -d
+
+Выполняем команду для просмотра логов post сервиса:
+docker-compose logs -f post
+
+
 
 ### validate docker-compose.yml
 docker-compose -f docker-compose.yml config
