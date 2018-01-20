@@ -435,14 +435,14 @@ docker-compose up -d
 ```
 
 ### pulling images
+```bash
 docker pull $USER_NAME/ui
 docker pull $USER_NAME/comment
-docker pull $USER_NAME/post:2_0 (for python2.7)
+docker pull $USER_NAME/post:2_0 ### (for python2.7)
 docker pull $USER_NAME/prometheus
 docker pull $USER_NAME/alertmanager
 docker pull $USER_NAME/fluentd
-
-docker pull $USER_NAME/post
+```
 
 ### if need python 2.7
 docker build -t shevchenkoav/post:2_0 -f ./post-py/Dockerfile_2_0 ./post-py/
