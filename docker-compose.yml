@@ -1,5 +1,6 @@
 version: '3.3'
 services:
+
   prometheus:
     image: ${USER_NAME}/prometheus
     ports:
@@ -7,6 +8,7 @@ services:
     networks:
       - back_net
       - front_net
+
   alertmanager:
     image: ${USER_NAME}/alertmanager
     command:
@@ -16,6 +18,7 @@ services:
     networks:
       - back_net
       - front_net
+
   cadvisor:
     image: google/cadvisor:latest
     volumes:
@@ -28,6 +31,7 @@ services:
     networks:
       - back_net
       - front_net
+
   grafana:
     image: grafana/grafana
     volumes:
@@ -42,6 +46,7 @@ services:
     networks:
       - back_net
       - front_net
+
   node-exporter:
     image: prom/node-exporter:v0.15.0
     user: root
@@ -56,6 +61,7 @@ services:
     networks:
       - back_net
       - front_net
+
   mongo_db:
     image: mongo:${MONGO_VERSION}
     volumes:
@@ -65,6 +71,7 @@ services:
         aliases:
           - post_db
           - comment_db
+
   ui:
     image: ${USER_NAME}/ui:${LATEST_VERSION}
     ports:
@@ -76,6 +83,7 @@ services:
         tag: service.ui
     networks:
       - front_net
+
   post:
     image: ${USER_NAME}/post:${LATEST_VERSION}
     ports:
@@ -88,6 +96,7 @@ services:
     networks:
       - back_net
       - front_net
+
   comment:
     image: ${USER_NAME}/comment:${LATEST_VERSION}
     networks:
