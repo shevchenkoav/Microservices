@@ -428,12 +428,6 @@ docker build -t $USER_NAME/fluentd .
 docker build -t shevchenkoav/post:2_0 -f ./post-py/Dockerfile_2_0 ./post-py/
 ```
 
-```Bash
-docker-compose -f docker-compose-logging.yml up -d
-docker-compose down
-docker-compose up -d
-```
-
 ### pulling images
 ```bash
 docker pull $USER_NAME/ui
@@ -443,6 +437,14 @@ docker pull $USER_NAME/prometheus
 docker pull $USER_NAME/alertmanager
 docker pull $USER_NAME/fluentd
 ```
+
+```Bash
+docker-compose -f docker-compose-logging.yml up -d
+docker-compose down
+docker-compose up -d
+```
+
+
 
 ### if need python 2.7
 docker build -t shevchenkoav/post:2_0 -f ./post-py/Dockerfile_2_0 ./post-py/
