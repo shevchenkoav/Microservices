@@ -458,3 +458,37 @@ docker-compose -f docker-compose.yml config
 25HW don't finished...
 
 -----
+
+# 26-27 HW. Swarm
+
+- Build or pull UI services
+- Create Machines:
+
+```Bash
+docker-machine create --driver google \
+--google-project docker-185820 \
+--google-zone europe-west1-b \
+--google-machine-type g1-small \
+--google-machine-image $(gcloud compute images list
+--filter ubuntu-1604-lts --uri) \
+master-1
+```
+
+```Bash
+docker-machine create --driver google \
+--google-project docker-185820 \
+--google-zone europe-west1-b \
+--google-machine-type g1-small \
+--google-machine-image $(gcloud compute images list
+worker-1
+```
+
+```Bash
+docker-machine create --driver google \
+--google-project docker-185820 \
+--google-zone europe-west1-b \
+--google-machine-type g1-small \
+--google-machine-image $(gcloud compute images list
+--filter ubuntu-1604-lts --uri) \
+worker-2
+```
