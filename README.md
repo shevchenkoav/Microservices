@@ -444,8 +444,6 @@ docker-compose down
 docker-compose up -d
 ```
 
-
-
 ### if need python 2.7
 docker build -t shevchenkoav/post:2_0 -f ./post-py/Dockerfile_2_0 ./post-py/
 
@@ -454,7 +452,9 @@ docker-compose up -d
 Выполняем команду для просмотра логов post сервиса:
 docker-compose logs -f post
 
-
-
 ### validate docker-compose.yml
 docker-compose -f docker-compose.yml config
+
+25HW don't finished...
+
+-----
