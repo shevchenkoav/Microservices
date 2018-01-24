@@ -1,0 +1,126 @@
+version: '3.3'
+services:
+
+  prometheus:
+    image: ${USER_NAME}/prometheus
+    ports:
+      - ${PROMETHEUS_HOST_PORT}:${PROMETHEUS_CONTAINER_PORT}/tcp
+    networks:
+      - back_net
+      - front_net
+
+  alertmanager:
+    image: ${USER_NAME}/alertmanager
+    command:
+      - '-config.file=/etc/alertmanager/config.yml'
+    ports:
+      - ${ALERT_HOST_PORT}:${ALERT_CONTAINER_PORT}/tcp
+    networks:
+      - back_net
+      - front_net
+
+  cadvisor:
+    image: google/cadvisor:latest
+    volumes:
+      - '/:/rootfs:ro'
+      - '/var/run:/var/run:rw'
+      - '/sys:/sys:ro'
+      - '/var/lib/docker/:/var/lib/docker:ro'
+    ports:
+      - ${CADVISOR_HOST_PORT}:${CADVISOR_CONTAINER_PORT}/tcp
+    networks:
+      - back_net
+      - front_net
+
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=secret
+    depends_on:
+      - prometheus
+    ports:
+      - ${GRAFANA_HOST_PORT}:${GRAFANA_CONTAINER_PORT}/tcp
+    networks:
+      - back_net
+      - front_net
+
+  node-exporter:
+    image: prom/node-exporter:v0.15.0
+    user: root
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+    networks:
+      - back_net
+      - front_net
+
+  mongo_db:
+    image: mongo:${MONGO_VERSION}
+    deploy:
+      placement:
+        constraints:
+          - node.labels.reliability == high
+    volumes:
+      - post_db:/data/db
+    networks:
+      back_net:
+        aliases:
+          - post_db
+          - comment_db
+
+  ui:
+    image: ${USER_NAME}/ui:${LATEST_VERSION}
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+    ports:
+      - ${UI_HOST_PORT}:${UI_CONTAINER_PORT}/tcp
+    networks:
+      - front_net
+
+  post:
+    image: ${USER_NAME}/post:${LATEST_VERSION}
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+    ports:
+      - "5000:5000"
+    networks:
+      - back_net
+      - front_net
+
+  comment:
+    image: ${USER_NAME}/comment:${LATEST_VERSION}
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+    networks:
+      - back_net
+      - front_net
+
+volumes:
+  post_db:
+  grafana_data:
+
+networks:
+  back_net:
+     ipam:
+         driver: default
+         config:
+            - subnet: ${BACK_NET}
+  front_net:
+     ipam:
+        driver: default
+        config:
+           - subnet: ${FRONT_NET}

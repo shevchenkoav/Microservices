@@ -519,7 +519,8 @@ $ docker node ls --filter "label=reliability" - ничего не выдаст
 docker node ls -q | xargs docker node inspect   -f '{{ .ID }} [{{ .Description.Hostname }}]: {{ .Spec.Labels }}'
 
 1. Так как мастер в теории должен быть машиной более надержной расметим на нем нашу БД.
-Определим с помощью placement constraints ограничения размещения:
+Определим с помощью placement constraints ограничения размещения в docker-compose:
+
 ```bash
 services:
   mongo:
@@ -536,3 +537,11 @@ services:
           - post_db
           - comment_db
 ```
+### Управление стэком!
+
+docker stack deploy --compose-file=<(docker-compose -f docker-compose.yml config 2>/dev/null) DEV
+
+чистим:
+docker stack deploy --compose-file=<(docker-compose -f docker-compose.yml config 2>/dev/null) --prune DEV
+
+docker stack rm DEV
