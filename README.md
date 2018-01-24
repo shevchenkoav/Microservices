@@ -492,3 +492,5 @@ docker-machine create --driver google \
 --filter ubuntu-1604-lts --uri) \
 worker-2
 ```
+
+### add infrastr.
