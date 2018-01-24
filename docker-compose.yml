@@ -78,6 +78,10 @@ services:
 
   ui:
     image: ${USER_NAME}/ui:${LATEST_VERSION}
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
     ports:
       - ${UI_HOST_PORT}:${UI_CONTAINER_PORT}/tcp
     logging:
@@ -90,6 +94,10 @@ services:
 
   post:
     image: ${USER_NAME}/post:${LATEST_VERSION}
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
     ports:
       - "5000:5000"
     logging:
@@ -103,6 +111,10 @@ services:
 
   comment:
     image: ${USER_NAME}/comment:${LATEST_VERSION}
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
     networks:
       - back_net
       - front_net
