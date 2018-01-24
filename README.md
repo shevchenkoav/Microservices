@@ -469,8 +469,7 @@ docker-machine create --driver google \
 --google-project docker-185820 \
 --google-zone europe-west1-b \
 --google-machine-type g1-small \
---google-machine-image $(gcloud compute images list
---filter ubuntu-1604-lts --uri) \
+--google-machine-image $(gcloud compute images list --filter ubuntu-1604-lts --uri) \
 master-1
 ```
 
@@ -479,7 +478,7 @@ docker-machine create --driver google \
 --google-project docker-185820 \
 --google-zone europe-west1-b \
 --google-machine-type g1-small \
---google-machine-image $(gcloud compute images list
+--google-machine-image $(gcloud compute images list --filter ubuntu-1604-lts --uri) \
 worker-1
 ```
 
@@ -488,9 +487,52 @@ docker-machine create --driver google \
 --google-project docker-185820 \
 --google-zone europe-west1-b \
 --google-machine-type g1-small \
---google-machine-image $(gcloud compute images list
---filter ubuntu-1604-lts --uri) \
+--google-machine-image $(gcloud compute images list --filter ubuntu-1604-lts --uri) \
 worker-2
 ```
 
-### add infrastr.
+### build swarm cluster
+```bash
+eval $(docker-machine env master-1)
+### or
+docker-machine ssh master-1
+```
+### initialize swarm mode
+docker swarm init
+
+### P.S. если на сервере несколько сетевых интерфейсов или сервер находится за NAT, то необходимо указывать флаг --advertise-addr с конкретным адресом публикации.   По-умолчанию это будет <адрес интерфейса>:2377
+
+### Объединяем сервисы и их зависимости в стэк:
+docker stack deploy --compose-file=<(docker-compose -f docker-compose.yml config 2>/dev/null) DEV
+
+### Смотрим сводную информацию по запущенным СЕРВИСАМ в стеке:
+docker stack services DEV
+
+### Размещаем сервисы
+docker node update --label-add reliability=high master-1
+
+Swarm не умеет фильтровать вывод по label-ам нод пока что  
+(ссылка на issue)
+$ docker node ls --filter "label=reliability" - ничего не выдаст
+
+Посмотреть label’ы всех нод можно так:
+docker node ls -q | xargs docker node inspect   -f '{{ .ID }} [{{ .Description.Hostname }}]: {{ .Spec.Labels }}'
+
+1. Так как мастер в теории должен быть машиной более надержной расметим на нем нашу БД.
+Определим с помощью placement constraints ограничения размещения:
+```bash
+services:
+  mongo:
+    image: mongo:${MONGO_VERSION}
+    deploy:
+      placement:
+        constraints:
+          - node.labels.reliability == high
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      back_net:
+        aliases:
+          - post_db
+          - comment_db
+```
