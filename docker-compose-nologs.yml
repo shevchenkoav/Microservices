@@ -86,6 +86,7 @@ services:
       - ${UI_HOST_PORT}:${UI_CONTAINER_PORT}/tcp
     networks:
       - front_net
+      - back_net
 
   post:
     image: ${USER_NAME}/post:${LATEST_VERSION}
